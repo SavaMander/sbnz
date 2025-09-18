@@ -1,0 +1,61 @@
+package security;
+import com.ftn.sbnz.model.models.CustomerAccount;
+import com.ftn.sbnz.model.models.SuspicionLevel;
+import com.ftn.sbnz.model.models.Order
+import com.ftn.sbnz.model.models.OrderStatus
+
+
+global com.ftn.sbnz.model.util.SecurityUtil securityUtil;
+
+rule "Flag new account with more than 1 promo code"
+    salience 10 // Dajemo mu neki prioritet, veći broj se izvršava pre
+    when
+
+        $account : CustomerAccount(
+            newAccount == true,
+            activePromoCodes.size() > 1,
+            suspicionLevel == SuspicionLevel.VALID
+        )
+    then
+        System.out.println("PRAVILO ISPUNJENO: [Flaguj nov nalog sa vise promo kodova] za korisnika: " + $account.getUsername());
+          $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
+          update($account);
+end
+rule "Flag new account if email is temporary"
+    when
+        $account : CustomerAccount(
+        suspicionLevel == SuspicionLevel.VALID
+        )
+
+        eval(securityUtil.isMailTemporary($account.getEmail()))
+    then
+            System.out.println("PRAVILO ISPUNJENO: [Flaguj nov nalog sa temp mailom] za korisnika: " + $account.getUsername());
+            $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
+            update($account);
+end
+rule "Penalize order cancelling 1-2"
+    when
+        $account : CustomerAccount(
+        suspicionLevel == SuspicionLevel.VALID
+        )
+        $order : Order(
+        status == OrderStatus.CANCELLED
+        )
+    then
+        System.out.println("PRAVILO ISPUNJENO: [Korisnik otkazao narudzbinu] za korisnika: " + $account.getUsername());
+          $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
+          update($account);
+end
+rule "Penalize order cancelling 2-3"
+    when
+        $account : CustomerAccount(
+        suspicionLevel == SuspicionLevel.SUSPICIOUS
+        )
+         $order : Order(
+          status == OrderStatus.CANCELLED
+         )
+    then
+          System.out.println("PRAVILO ISPUNJENO: [Korisnik otkazao narudzbinu(drugi nivo)] za korisnika: " + $account.getUsername());
+              $account.setSuspicionLevel(SuspicionLevel.MALICIOUS);
+              update($account);
+end
