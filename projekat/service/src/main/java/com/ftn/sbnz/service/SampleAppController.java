@@ -31,35 +31,32 @@ public class SampleAppController {
 		this.kieContainer = kieContainer;
 	}
 
-	@PostMapping(value = "/activate-rules")
-	public ResponseEntity<String> activateRules() {
+//	@PostMapping(value = "/activate-rules")
+//	public ResponseEntity<String> activateRules() {
+//
+//		CustomerAccount account = new CustomerAccount("Korisnik1","korisnik1@maildrop.com","korisnik1","adresa","123-456-789","12345");
+//		account.getActivePromoCodes().add("promocode1");
+//		account.getActivePromoCodes().add("promocode2");
+//
+//		Order order = new Order(account,3350.0);
+//		order.setStatus(OrderStatus.CANCELLED);
+//
+//		KieSession kieSession = kieContainer.newKieSession("k-session");
+//		kieSession.addEventListener(new org.kie.api.event.rule.DebugAgendaEventListener());
+//		try {
+//			SecurityUtil util = new SecurityUtil();
+//			kieSession.setGlobal("securityUtil", util);
+//
+//			kieSession.insert(account);
+//			kieSession.insert(order);
+//			kieSession.fireAllRules();
+//
+//			System.out.println("Novi nivo sumnjivosti: " + account.getSuspicionLevel());
+//
+//		} finally {
+//			kieSession.dispose();
+//		}
+//		return ResponseEntity.ok("Proba");
+//	}
 
-		CustomerAccount account = new CustomerAccount("Korisnik1","korisnik1@maildrop.com","korisnik1","adresa","123-456-789","12345");
-		account.getActivePromoCodes().add("promocode1");
-		account.getActivePromoCodes().add("promocode2");
-
-		Order order = new Order(account,3350.0);
-		order.setStatus(OrderStatus.CANCELLED);
-
-		KieSession kieSession = kieContainer.newKieSession("k-session");
-		kieSession.addEventListener(new org.kie.api.event.rule.DebugAgendaEventListener());
-		try {
-			SecurityUtil util = new SecurityUtil();
-			kieSession.setGlobal("securityUtil", util);
-
-			kieSession.insert(account);
-			kieSession.insert(order);
-			kieSession.fireAllRules();
-
-			System.out.println("Novi nivo sumnjivosti: " + account.getSuspicionLevel());
-
-		} finally {
-			kieSession.dispose();
-		}
-		return ResponseEntity.ok("Proba");
-	}
-
-	
-	
-	
 }
