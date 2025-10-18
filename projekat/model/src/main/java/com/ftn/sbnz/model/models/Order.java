@@ -113,4 +113,20 @@ public class Order {
     public void setStatus(OrderStatus status) {
         this.status = status;
     }
+
+    public Instant getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Instant creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Instant getCancellationDate() {
+        return cancellationDate;
+    }
+
+    public void setCancellationDate(Instant cancellationDate) {
+        this.cancellationDate = cancellationDate;
+    }
 }

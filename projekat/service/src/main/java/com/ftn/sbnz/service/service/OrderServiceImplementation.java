@@ -92,10 +92,11 @@ public class OrderServiceImplementation implements  OrderService{
 
     @Override
     public List<GetOrdersRequest> getOrders(String email) {
-        List<Order> orders = orderRepository.findAll();
+        List<Order> orders = orderRepository.findByUserEmail(email);
         List<GetOrdersRequest> ordersRequests = new ArrayList<>();
         for (Order order : orders) {
-            GetOrdersRequest getOrdersRequest = new GetOrdersRequest(order.getOrderId(),order.getRestaurant(),order.getOrderList(),order.getOrderPrice());
+            GetOrdersRequest getOrdersRequest = new GetOrdersRequest(order.getOrderId(),order.getRestaurant(),order.getOrderList(),order.getOrderPrice(), order.getCreationDate());
+            ordersRequests.add(getOrdersRequest);
         }
         return ordersRequests;
     }

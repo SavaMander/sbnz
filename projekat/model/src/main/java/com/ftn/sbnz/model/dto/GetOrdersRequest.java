@@ -1,5 +1,6 @@
 package com.ftn.sbnz.model.dto;
 
+import java.time.Instant;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,5 +16,6 @@ public class GetOrdersRequest {
     String restaurant;
     String orderList;
     double totalPrice;
+    Instant creationDate;
 
 }
