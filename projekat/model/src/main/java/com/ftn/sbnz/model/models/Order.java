@@ -1,31 +1,84 @@
 package com.ftn.sbnz.model.models;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+import java.time.Instant;
 import java.util.UUID;
 
+@Entity
+@Table(name = "customer_order")
 public class Order {
 
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     private UUID orderId;
-    private CustomerAccount customerAccount;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private User user;
+    @Column(nullable = false)
     private double orderPrice;
+    @Column(nullable = false)
     private OrderStatus status;
+    @ManyToOne
+    private IPAddress ipAddress;
+    @Column(nullable = false)
+    private String restaurant;
+    @Column(nullable = false)
+    private String orderList;
+    @Column(nullable = false)
+    private Instant creationDate;
+    @Column
+    private Instant cancellationDate;
 
+    public User getUser() {
+        return user;
+    }
 
-    public Order(CustomerAccount customerAccount, double orderPrice) {
-        this.customerAccount = customerAccount;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(String restaurant) {
+        this.restaurant = restaurant;
+    }
+
+    public String getOrderList() {
+        return orderList;
+    }
+
+    public void setOrderList(String orderList) {
+        this.orderList = orderList;
+    }
+
+    public Order(User user, double orderPrice) {
+        this.user = user;
         this.orderPrice = orderPrice;
         this.status = OrderStatus.CREATED;
+        this.creationDate = Instant.now();
+    }
+
+    public Order() {
+
     }
 
     public UUID getOrderId() {
         return orderId;
     }
 
-    public CustomerAccount getCustomerAccount() {
-        return customerAccount;
+    public User getCustomerAccount() {
+        return user;
     }
 
-    public void setCustomerAccount(CustomerAccount customerAccount) {
-        this.customerAccount = customerAccount;
+    public void setCustomerAccount(User user) {
+        this.user = user;
     }
 
     public double getOrderPrice() {
@@ -34,6 +87,14 @@ public class Order {
 
     public void setOrderPrice(double orderPrice) {
         this.orderPrice = orderPrice;
+    }
+
+    public IPAddress getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(IPAddress ipAddress) {
+        this.ipAddress = ipAddress;
     }
 
     public OrderStatus getStatus() {

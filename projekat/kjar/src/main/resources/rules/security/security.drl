@@ -1,61 +1,156 @@
 package security;
-import com.ftn.sbnz.model.models.CustomerAccount;
+import com.ftn.sbnz.model.models.User;
 import com.ftn.sbnz.model.models.SuspicionLevel;
 import com.ftn.sbnz.model.models.Order
+import com.ftn.sbnz.model.models.Address
 import com.ftn.sbnz.model.models.OrderStatus
-
-
+import com.ftn.sbnz.model.models.CreditCard
+import com.ftn.sbnz.model.models.IPAddress
 global com.ftn.sbnz.model.util.SecurityUtil securityUtil;
 
 rule "Flag new account with more than 1 promo code"
-    salience 10 // Dajemo mu neki prioritet, veći broj se izvršava pre
+    salience 10
     when
-
-        $account : CustomerAccount(
+        $account : User(
             newAccount == true,
             activePromoCodes.size() > 1,
             suspicionLevel == SuspicionLevel.VALID
         )
     then
-        System.out.println("PRAVILO ISPUNJENO: [Flaguj nov nalog sa vise promo kodova] za korisnika: " + $account.getUsername());
           $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
           update($account);
 end
 rule "Flag new account if email is temporary"
     when
-        $account : CustomerAccount(
+        $account : User(
         suspicionLevel == SuspicionLevel.VALID
         )
 
         eval(securityUtil.isMailTemporary($account.getEmail()))
     then
-            System.out.println("PRAVILO ISPUNJENO: [Flaguj nov nalog sa temp mailom] za korisnika: " + $account.getUsername());
             $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
             update($account);
 end
-rule "Penalize order cancelling 1-2"
+rule "Penalize order cancelling -> User Level 2"
     when
-        $account : CustomerAccount(
+        $account : User(
         suspicionLevel == SuspicionLevel.VALID
         )
         $order : Order(
+        customerAccount == $account,
         status == OrderStatus.CANCELLED
         )
     then
-        System.out.println("PRAVILO ISPUNJENO: [Korisnik otkazao narudzbinu] za korisnika: " + $account.getUsername());
           $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
           update($account);
 end
-rule "Penalize order cancelling 2-3"
+rule "Penalize order cancelling -> User Level 3"
     when
-        $account : CustomerAccount(
+        $account : User(
         suspicionLevel == SuspicionLevel.SUSPICIOUS
         )
-         $order : Order(
-          status == OrderStatus.CANCELLED
-         )
+        $order : Order(
+        customerAccount == $account,
+        status == OrderStatus.CANCELLED
+        )
     then
-          System.out.println("PRAVILO ISPUNJENO: [Korisnik otkazao narudzbinu(drugi nivo)] za korisnika: " + $account.getUsername());
-              $account.setSuspicionLevel(SuspicionLevel.MALICIOUS);
-              update($account);
+          $account.setSuspicionLevel(SuspicionLevel.MALICIOUS);
+          $account.setSuspended(true);
+          $account.setBlockExpirationDate(securityUtil.getShortBlockExpiration());
+          update($account);
+end
+rule "New account, address is suspicious -> User Level 2"
+    when
+        $account : User(
+            suspicionLevel == SuspicionLevel.VALID,
+            address != null
+        )
+        $address : Address(
+            id == $account.address.id,
+            isSuspicious == true
+        )
+    then
+        $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
+        update($account);
+end
+rule "CreditCard is suspicious -> User Level 2"
+    when
+        $account : User(
+            suspicionLevel == SuspicionLevel.VALID,
+            cardNumber != null
+        )
+        $card : CreditCard(
+            id == $account.cardNumber.id,
+            isSuspicious == true
+        )
+    then
+        $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
+        update($account);
+end
+rule "Card used on 3+ accounts -> User Level 2 & Flag Card"
+    when
+        $account : User(
+            newAccount == true,
+            suspicionLevel == SuspicionLevel.VALID,
+            cardNumber != null
+        )
+        $card : CreditCard(
+            id == $account.cardNumber.id,
+            numberOfAccounts >= 3,
+            isSuspicious == false
+        )
+    then
+        $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
+        update($account);
+        $card.setSuspicious(true);
+        update($card);
+end
+rule "Flag new account with more than 1 promo code"
+    salience 10
+    when
+        $account : User(
+            newAccount == true,
+            activePromoCodes.size() > 1,
+            suspicionLevel == SuspicionLevel.SUSPICIOUS
+        )
+    then
+          $account.setSuspended(true);
+          $account.setBlockExpirationDate(securityUtil.getShortBlockExpiration());
+          update($account);
+end
+rule "Level 2 User Spent > 3000 -> Level 1"
+    when
+        $account : User(
+            suspicionLevel == SuspicionLevel.SUSPICIOUS,
+            totalSpentSinceLastSuspiciousAction > 3000.0
+        )
+    then
+        $account.setSuspicionLevel(SuspicionLevel.VALID);
+        update($account);
+end
+rule "Level 3 User Spent > 5000 -> Level 1"
+    when
+        $account : User(
+            suspicionLevel == SuspicionLevel.MALICIOUS,
+            totalSpentSinceLastSuspiciousAction > 5000.0
+        )
+    then
+        $account.setSuspicionLevel(SuspicionLevel.VALID);
+        update($account);
+end
+rule "Order on suspicious IP address -> User Level 2"
+    when
+        $account : User(
+            suspicionLevel == SuspicionLevel.VALID
+        )
+        $ipAddress : IPAddress(
+            isSuspicious == true
+        )
+        $order : Order(
+            user == $account,
+            ipAddress == $ipAddress
+        )
+    then
+          $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
+          update($account);
 end

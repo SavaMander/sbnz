@@ -2,6 +2,8 @@ package com.ftn.sbnz.model.util;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -61,5 +63,10 @@ public class SecurityUtil {
         System.out.println("Domain: " + domain);
         System.out.println("Checking if it is temporary email domain: " + temporaryDomains.contains(domain));
         return temporaryDomains.contains(domain);
+    }
+
+    public Instant getShortBlockExpiration() {
+        // Vraća Instant 30 minuta u budućnosti
+        return Instant.now().plus(6, ChronoUnit.HOURS);
     }
 }
