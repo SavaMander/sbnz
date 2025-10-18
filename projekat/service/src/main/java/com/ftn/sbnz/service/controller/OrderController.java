@@ -42,7 +42,7 @@ public class OrderController {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/my-orders")
+    @GetMapping()
     public ResponseEntity<List<GetOrdersRequest>> getMyOrders(@RequestParam String email) {
         List<GetOrdersRequest> orders = orderService.getOrders(email);
         return ResponseEntity.ok(orders);
