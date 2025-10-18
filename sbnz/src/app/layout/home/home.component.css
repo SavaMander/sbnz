@@ -1,0 +1,797 @@
+/* home.component.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.home-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #fef3c7, #ffffff, #fef3c7);
+}
+
+/* Header */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#account {
+  margin-left: 70%;
+}
+.header-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+}
+/* Add these styles to your home.component.css */
+
+/* General button reset and spacing */
+.header-content button {
+    padding: 0.6rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 0.75rem; /* Space between buttons */
+    white-space: nowrap;
+}
+
+/* Login Button (Outline/Secondary Style) */
+/* We target this button using :nth-last-child(2) as it's the second-to-last button in the HTML */
+.header-content button:nth-last-child(2) {
+    background-color: transparent;
+    color: #ea580c; /* Text color matching accent */
+    border: 1px solid #ea580c;
+}
+
+.header-content button:nth-last-child(2):hover {
+    background-color: #fff7ed; /* Very light orange background on hover */
+    color: #c2410c;
+    border-color: #c2410c;
+}
+
+/* Register Button (Primary/Solid Style) */
+/* We target this button using :last-child as it's the final button in the HTML */
+.header-content button:last-child {
+    background-color: #ea580c; /* Accent color fill */
+    color: white;
+    border: 1px solid #ea580c;
+    box-shadow: 0 2px 5px rgba(234, 88, 12, 0.3);
+}
+
+.header-content button:last-child:hover {
+    background-color: #c2410c;
+    border-color: #c2410c;
+    box-shadow: 0 4px 8px rgba(234, 88, 12, 0.4);
+}
+
+/* Media Query Adjustment for Small Screens */
+@media (max-width: 480px) {
+    .header-content button {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+        margin-left: 0.3rem;
+    }
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.truck-icon {
+  font-size: 2rem;
+}
+
+.header h1 {
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: #111827;
+}
+
+.profile-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #fed7aa;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.25rem;
+  transition: background-color 0.3s ease;
+}
+
+.profile-btn:hover {
+  background-color: #fdba74;
+}
+
+/* Location Bar */
+.location-bar {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.location-icon {
+  font-size: 1.25rem;
+  color: #ea580c;
+}
+
+/* Hero Section */
+.hero {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.hero-content {
+  margin-bottom: 2rem;
+}
+
+.hero h2 {
+  font-size: 2.25rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.hero p {
+  color: #6b7280;
+}
+
+/* Search Bar */
+.search-container {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 0.875rem;
+  font-size: 1.25rem;
+  color: #9ca3af;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
+}
+
+/* Categories */
+.categories {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  margin-bottom: 3rem;
+}
+
+.category-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: #f3f4f6;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #374151;
+}
+
+.category-btn:hover {
+  background-color: #e5e7eb;
+}
+
+.category-btn.active {
+  background-color: #ea580c;
+  color: white;
+}
+
+.category-icon {
+  font-size: 1.5rem;
+}
+
+.category-name {
+  font-size: 0.875rem;
+}
+
+/* Restaurants Section */
+.restaurants-section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+.section-title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 1.5rem;
+}
+
+.restaurants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .restaurants-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .restaurants-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Restaurant Card */
+.restaurant-card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.restaurant-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.restaurant-image {
+  position: relative;
+  height: 10rem;
+  background: linear-gradient(135deg, #fed7aa, #fef3c7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.food-emoji {
+  font-size: 4rem;
+}
+
+.badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: #ea580c;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.restaurant-info {
+  padding: 1rem;
+}
+
+.restaurant-name {
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.star {
+  font-size: 1rem;
+}
+
+.rating-value {
+  font-weight: 600;
+  color: #111827;
+}
+
+.reviews {
+  color: #6b7280;
+}
+
+.delivery-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-bottom: 1rem;
+}
+
+.time,
+.fee {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.clock-icon {
+  font-size: 1rem;
+}
+
+.order-btn {
+  width: 100%;
+  background-color: #ea580c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.order-btn:hover {
+  background-color: #c2410c;
+}
+
+/* Footer */
+.footer {
+  background-color: #111827;
+  color: white;
+  margin-top: 4rem;
+}
+
+.footer-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.footer-col h5 {
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-col a {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.3s ease;
+}
+
+.footer-col a:hover {
+  color: white;
+}
+
+.footer-bottom {
+  border-top: 1px solid #374151;
+  padding-top: 2rem;
+}
+
+.footer-bottom p {
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero h2 {
+    font-size: 1.75rem;
+  }
+
+  .restaurants-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .categories {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content {
+    padding: 0.75rem 1rem;
+  }
+
+  .hero {
+    padding: 1rem;
+  }
+
+  .restaurants-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h2 {
+    font-size: 1.5rem;
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+/* Dialog Overlay */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Dialog Content */
+.dialog-content {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+  max-width: 450px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-in-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Dialog Header */
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dialog-header h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #111827;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6b7280;
+  transition: color 0.3s ease;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  color: #111827;
+}
+
+/* Dialog Form */
+.dialog-form {
+  padding: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+/* Input Styling */
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  background-color: white;
+}
+
+.form-group input::placeholder {
+  color: #9ca3af;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #ea580c;
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
+}
+
+/* Select Dropdown Specific Styles */
+.form-group select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 2.5rem;
+  background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e');
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.25rem;
+  padding-right: 2.5rem;
+}
+
+.form-group select option {
+  color: #111827;
+  background-color: white;
+  padding: 0.5rem;
+}
+
+.form-group select option:disabled {
+  color: #9ca3af;
+}
+
+.form-group select option:hover {
+  background-color: #fed7aa;
+}
+
+/* Disabled state */
+.form-group input:disabled,
+.form-group select:disabled {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Error state (optional) */
+.form-group input.error,
+.form-group select.error {
+  border-color: #ef4444;
+}
+
+.form-group input.error:focus,
+.form-group select.error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 0.625rem;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .form-group label {
+    font-size: 0.875rem;
+  }
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  padding: 0.875rem;
+  background-color: #ea580c;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.submit-btn:hover {
+  background-color: #c2410c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+/* Dialog Footer */
+.dialog-footer {
+  text-align: center;
+  margin-top: 1rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #ea580c;
+  cursor: pointer;
+  font-weight: 600;
+  transition: color 0.3s ease;
+  padding: 0;
+  text-decoration: underline;
+  font-size: inherit;
+}
+
+.link-btn:hover {
+  color: #c2410c;
+}
+
+/* Account Buttons Styling */
+#account {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-login,
+.btn-register {
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  border: 2px solid #ea580c;
+}
+
+.btn-login {
+  background-color: #ea580c;
+  color: white;
+}
+
+.btn-login:hover {
+  background-color: #c2410c;
+  border-color: #c2410c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+}
+
+.btn-register {
+  background-color: transparent;
+  color: #ea580c;
+}
+
+.btn-register:hover {
+  background-color: #ea580c;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dialog-content {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .dialog-header {
+    padding: 1.25rem;
+  }
+
+  .dialog-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .dialog-form {
+    padding: 1.25rem;
+  }
+
+  #account {
+    gap: 0.5rem;
+  }
+
+  .btn-login,
+  .btn-register {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dialog-overlay {
+    align-items: flex-end;
+  }
+
+  .dialog-content {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 1.5rem 1.5rem 0 0;
+    max-height: 80vh;
+  }
+
+  .dialog-header {
+    padding: 1rem;
+  }
+
+  .dialog-form {
+    padding: 1rem;
+  }
+
+  #account {
+    gap: 0.25rem;
+  }
+
+  .btn-login,
+  .btn-register {
+    padding: 0.5rem 0.65rem;
+    font-size: 0.8rem;
+  }
+}

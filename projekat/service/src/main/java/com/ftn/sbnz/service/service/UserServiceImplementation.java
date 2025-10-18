@@ -1,6 +1,7 @@
 package com.ftn.sbnz.service.service;
 
 import com.ftn.sbnz.model.dto.MessageResponse;
+import com.ftn.sbnz.model.dto.Profile;
 import com.ftn.sbnz.model.dto.RegistrationRequest;
 import com.ftn.sbnz.model.models.Address;
 import com.ftn.sbnz.model.models.CreditCard;
@@ -14,6 +15,7 @@ import org.aspectj.bridge.Message;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,6 +33,9 @@ public class UserServiceImplementation implements UserService {
     private AddressRepository addressRepository;
     @Autowired
     private CreditCardRepository creditCardRepository;
+    @Autowired
+    @Lazy
+    private PasswordEncoder passwordEncoder;
 
     private final KieContainer kieContainer;
 
@@ -39,12 +44,12 @@ public class UserServiceImplementation implements UserService {
     }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+        Optional<User> userOptional = userRepository.findByEmail(username);
+        return userOptional.orElse(null);
     }
 
     @Transactional
     public MessageResponse registerUser(RegistrationRequest registrationRequest) {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         if (userRepository.findByUsername(registrationRequest.getUsername()).isPresent()) {
             return new MessageResponse(false, "User already exists");
         }
@@ -94,5 +99,15 @@ public class UserServiceImplementation implements UserService {
         }
         userRepository.save(user);
         return new MessageResponse(true, "Successfully registered");
+    }
+
+    public Profile getProfile(String email){
+        Optional<User> opt = userRepository.findByEmail(email);
+        if(opt.isEmpty()){
+            return null;
+        }
+        User user = opt.get();
+        Profile profile = new Profile(user.getRealUsername(),user.getEmail(),user.getAddress().getAddress(),user.getPhone());
+        return profile;
     }
 }

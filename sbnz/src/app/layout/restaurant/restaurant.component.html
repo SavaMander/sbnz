@@ -1,0 +1,181 @@
+<div class="restaurant-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <button class="back-btn" routerLink="/home">←</button>
+      <h1>Pizza Palace</h1>
+      <button class="cart-btn">
+        🛒
+        <span class="cart-badge">{{ cartItemCount }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Restaurant Banner -->
+  <section class="restaurant-banner">
+    <div class="banner-content">
+      <div class="banner-info">
+        <h2>Pizza Palace</h2>
+        <div class="banner-stats">
+          <div class="stat">
+            <span class="stat-value">⭐ 4.8</span>
+            <span class="stat-label">320 reviews</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">⏱️ 25-35</span>
+            <span class="stat-label">minutes</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">💰 300 din</span>
+            <span class="stat-label">delivery</span>
+          </div>
+        </div>
+        <p class="banner-description">
+          Welcome to Pizza Palace! We serve authentic Italian pizzas made with fresh ingredients and traditional recipes. Experience the taste of Italy in every bite!
+        </p>
+      </div>
+      <div class="banner-image">
+        <span class="banner-emoji">🍕</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Menu Section -->
+    <div>
+      <!-- Filters -->
+      <div class="filters">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">Pizzas</button>
+        <button class="filter-btn">Sides</button>
+        <button class="filter-btn">Drinks</button>
+        <button class="filter-btn">Desserts</button>
+      </div>
+
+      <!-- Pizzas Section -->
+      <div class="menu-section">
+        <h2 class="menu-title">🍕 Our Pizzas</h2>
+        <div class="menu-grid">
+          <div *ngFor="let pizza of pizzas" class="menu-item">
+            <div class="item-image">{{ pizza.emoji }}</div>
+            <div class="item-content">
+              <h3 class="item-name">{{ pizza.name }}</h3>
+              <p class="item-description">{{ pizza.description }}</p>
+              <div class="item-footer">
+                <span class="item-price">{{ pizza.price }} din</span>
+                <button class="add-btn" (click)="addToCart(pizza)">Add +</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sides Section -->
+      <div class="menu-section">
+        <h2 class="menu-title">🍟 Sides & Starters</h2>
+        <div class="menu-grid">
+          <div *ngFor="let side of sides" class="menu-item">
+            <div class="item-image">{{ side.emoji }}</div>
+            <div class="item-content">
+              <h3 class="item-name">{{ side.name }}</h3>
+              <p class="item-description">{{ side.description }}</p>
+              <div class="item-footer">
+                <span class="item-price">{{ side.price }} din</span>
+                <button class="add-btn" (click)="addToCart(side)">Add +</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drinks Section -->
+      <div class="menu-section">
+        <h2 class="menu-title">🥤 Beverages</h2>
+        <div class="menu-grid">
+          <div *ngFor="let drink of drinks" class="menu-item">
+            <div class="item-image">{{ drink.emoji }}</div>
+            <div class="item-content">
+              <h3 class="item-name">{{ drink.name }}</h3>
+              <p class="item-description">{{ drink.description }}</p>
+              <div class="item-footer">
+                <span class="item-price">{{ drink.price }} din</span>
+                <button class="add-btn" (click)="addToCart(drink)">Add +</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <!-- Cart Summary -->
+      <div class="cart-summary">
+        <h3>Your Order</h3>
+
+        <!-- Empty Cart Message -->
+        <div *ngIf="cart.length === 0" class="empty-cart">
+          <div class="empty-cart-emoji">🛒</div>
+          <p>Your cart is empty</p>
+        </div>
+
+        <!-- Cart Items -->
+        <div *ngIf="cart.length > 0">
+          <div *ngFor="let item of cart" class="cart-item-wrapper">
+            <div class="cart-item">
+              <div class="cart-item-details">
+                <span class="cart-item-name">{{ item.name }}</span>
+                <span class="cart-item-price">{{ item.price }} din</span>
+              </div>
+              <div class="quantity-control">
+                <button class="qty-btn" (click)="updateQuantity(item.id, item.quantity - 1)">−</button>
+                <span class="qty-display">{{ item.quantity }}</span>
+                <button class="qty-btn" (click)="updateQuantity(item.id, item.quantity + 1)">+</button>
+              </div>
+              <button class="remove-btn" (click)="removeFromCart(item.id)">✕</button>
+            </div>
+          </div>
+
+          <div class="cart-total">
+            <span>Total:</span>
+            <span>{{ cartTotal }} din</span>
+          </div>
+
+          <button class="checkout-btn" (click)="proceedToCheckout()">
+            Proceed to Checkout
+          </button>
+
+          <button class="clear-cart-btn" (click)="clearCart()">
+            Clear Cart
+          </button>
+        </div>
+      </div>
+
+      <!-- Info Section -->
+      <div class="info-section">
+        <h3>📍 Restaurant Info</h3>
+        <div class="info-item">
+          <span class="info-icon">⏱️</span>
+          <span>25-35 min delivery</span>
+        </div>
+        <div class="info-item">
+          <span class="info-icon">📍</span>
+          <span>456 Food St, Downtown</span>
+        </div>
+        <div class="info-item">
+          <span class="info-icon">💰</span>
+          <span>Min order: 0 din</span>
+        </div>
+        <div class="info-item">
+          <span class="info-icon">🚚</span>
+          <span>Free delivery over 50 din</span>
+        </div>
+        <div class="info-item">
+          <span class="info-icon">⭐</span>
+          <span>4.8/5 (320 reviews)</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

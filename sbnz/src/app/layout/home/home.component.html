@@ -1,0 +1,256 @@
+<!-- home.component.html -->
+<div class="home-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo-section">
+        <span class="truck-icon">🚚</span>
+        <h1>Foodex</h1>
+      </div>
+      <div id="account">
+        <button *ngIf="isLoggedIn" routerLink="/profile">Profile</button>
+        <button *ngIf="!isLoggedIn" class="btn-login" (click)="openLoginDialog()">Login</button>
+        <button *ngIf="!isLoggedIn" class="btn-register" (click)="openRegisterDialog()">Register</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Location Bar -->
+  <!-- <div class="location-bar">
+    <span class="location-icon">📍</span>
+    <span>Delivering to: <strong>123 Main St, City</strong></span>
+  </div> -->
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Order from your favorite restaurants</h2>
+      <p>Fast, reliable delivery right to your door</p>
+    </div>
+    <!-- Categories -->
+    <!-- <div class="categories">
+      <button
+        *ngFor="let category of categories"
+        (click)="selectCategory(category.id)"
+        [class.active]="selectedCategory === category.id"
+        class="category-btn"
+      >
+        <span class="category-icon">{{ category.icon }}</span>
+        <span class="category-name">{{ category.name }}</span>
+      </button>
+    </div> -->
+  </section>
+
+  <!-- Restaurants Section -->
+  <section class="restaurants-section">
+    <h3 class="section-title">Popular Restaurants</h3>
+    <div class="restaurants-grid">
+      <div *ngFor="let restaurant of restaurants" class="restaurant-card">
+        <!-- Restaurant Image -->
+        <div class="restaurant-image">
+          <span class="food-emoji">{{ restaurant.image }}</span>
+          <span *ngIf="restaurant.badge" class="badge">{{ restaurant.badge }}</span>
+        </div>
+
+        <!-- Restaurant Info -->
+        <div class="restaurant-info">
+          <h4 class="restaurant-name">{{ restaurant.name }}</h4>
+
+          <!-- Rating -->
+          <div class="rating">
+            <span class="star">⭐</span>
+            <span class="rating-value">{{ restaurant.rating }}</span>
+            <span class="reviews">({{ restaurant.reviews }})</span>
+          </div>
+
+          <!-- Delivery Info -->
+          <div class="delivery-info">
+            <div class="time">
+              <span class="clock-icon">⏱️</span>
+              {{ restaurant.deliveryTime }}
+            </div>
+            <div class="fee">{{ restaurant.deliveryFee }}</div>
+          </div>
+
+          <!-- Order Button -->
+          <button class="order-btn" routerLink="/restaurant">
+            Order Now →
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Register Dialog -->
+  <div *ngIf="showRegisterDialog" class="dialog-overlay" (click)="closeRegisterDialog()">
+    <div class="dialog-content" (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <h2>Create Account</h2>
+        <button class="close-btn" (click)="closeRegisterDialog()">✕</button>
+      </div>
+
+      <form class="dialog-form">
+        <div class="form-group">
+  <label for="username">Username</label>
+  <input
+    type="text"
+    id="fullName"
+    [(ngModel)]="registerForm.username"
+    name="fullName"
+    placeholder="Enter username"
+    required
+  />
+</div>
+
+<div class="form-group">
+  <label for="email">Email</label>
+  <input
+    type="email"
+    id="email"
+    [(ngModel)]="registerForm.email"
+    name="email"
+    placeholder="Enter your email"
+    required
+  />
+</div>
+
+<div class="form-group">
+  <label for="phone">Phone Number</label>
+  <input
+    type="tel"
+    id="phone"
+    [(ngModel)]="registerForm.phoneNumber"
+    name="phone"
+    placeholder="Enter your phone number"
+    required
+  />
+</div>
+
+<div class="form-group">
+  <label for="address">Address</label>
+  <input
+    type="text"
+    id="address"
+    [(ngModel)]="registerForm.address"
+    name="address"
+    placeholder="Enter your street address"
+    required
+  />
+</div>
+
+<div class="form-group">
+  <label for="city">City</label>
+  <select
+    id="city"
+    [(ngModel)]="registerForm.city"
+    name="city"
+    required
+  >
+    <option value="" disabled selected>Select a city</option>
+    <option value="Beograd">Beograd</option>
+    <option value="Novi Sad">Novi Sad</option>
+    <option value="Niš">Niš</option>
+    <option value="Kragujevac">Kragujevac</option>
+    <option value="Subotica">Subotica</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="password">Password</label>
+  <input
+    type="password"
+    id="password"
+    [(ngModel)]="registerForm.password"
+    name="password"
+    placeholder="Enter password"
+    required
+  />
+</div>
+
+<div class="form-group">
+  <label for="confirmPassword">Confirm Password</label>
+  <input
+    type="password"
+    id="confirmPassword"
+    [(ngModel)]="registerForm.confirmPassword"
+    name="confirmPassword"
+    placeholder="Confirm password"
+    required
+  />
+</div>
+
+<div class="form-group">
+  <label for="creditCard">Credit Card Number</label>
+  <input
+    type="text"
+    id="creditCard"
+    [(ngModel)]="registerForm.creditCardNumber"
+    name="creditCard"
+    placeholder="Enter 16-digit card number"
+    maxlength="16"
+    (keypress)="onlyNumbers($event)"
+    required
+  />
+</div>
+
+        <button type="button" class="submit-btn" (click)="handleRegister()">
+          Create Account
+        </button>
+
+        <p class="dialog-footer">
+          Already have an account?
+          <button type="button" class="link-btn" (click)="switchToLogin()">
+            Login here
+          </button>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Login Dialog -->
+  <div *ngIf="showLoginDialog" class="dialog-overlay" (click)="closeLoginDialog()">
+    <div class="dialog-content" (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <h2>Login</h2>
+        <button class="close-btn" (click)="closeLoginDialog()">✕</button>
+      </div>
+
+      <form class="dialog-form">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input
+            type="email"
+            id="loginEmail"
+            [(ngModel)]="loginForm.email"
+            name="loginEmail"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input
+            type="password"
+            id="loginPassword"
+            [(ngModel)]="loginForm.password"
+            name="loginPassword"
+            placeholder="Enter password"
+            required
+          />
+        </div>
+
+        <button type="button" class="submit-btn" (click)="handleLogin()">
+          Login
+        </button>
+
+        <p class="dialog-footer">
+          Don't have an account?
+          <button type="button" class="link-btn" (click)="switchToRegister()">
+            Register here
+          </button>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>
