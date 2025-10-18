@@ -26,7 +26,7 @@ public class User implements UserDetails {
     private String email;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
     @Column(nullable = false)
     private SuspicionLevel suspicionLevel;
@@ -106,28 +106,31 @@ public class User implements UserDetails {
 
     }
 
-    public String getUsername() {
+    public String getRealUsername() {
         return username;
+    }
+    public String getUsername() {
+        return email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return !this.isSuspended;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return !this.isSuspended;
     }
 
     public void setUsername(String username) {
