@@ -68,6 +68,15 @@ public class Order {
     public Order() {
 
     }
+    public Order(User user, String restaurant, String orderList, double orderPrice, String ipAddress) {
+        this.user = user;
+        this.restaurant = restaurant;
+        this.orderList = orderList;
+        this.orderPrice = orderPrice;
+        this.ipAddress =  new IPAddress(ipAddress);
+        this.status = OrderStatus.CREATED;
+        this.creationDate = Instant.now();
+    }
 
     public UUID getOrderId() {
         return orderId;
@@ -103,5 +112,21 @@ public class Order {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public Instant getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Instant creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Instant getCancellationDate() {
+        return cancellationDate;
+    }
+
+    public void setCancellationDate(Instant cancellationDate) {
+        this.cancellationDate = cancellationDate;
     }
 }

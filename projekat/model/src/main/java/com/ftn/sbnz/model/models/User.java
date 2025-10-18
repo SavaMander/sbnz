@@ -30,7 +30,8 @@ public class User implements UserDetails {
     private Role role;
     @Column(nullable = false)
     private SuspicionLevel suspicionLevel;
-
+    @Column(nullable = false)
+    private boolean hasChangedAddress;
     @ManyToOne
     private Address address;
     @ManyToOne
@@ -100,6 +101,7 @@ public class User implements UserDetails {
         this.role = role;
         this.blockExpirationDate = null;
         this.moneySpent = 0;
+        this.hasChangedAddress = false;
     }
 
     public User() {
@@ -220,5 +222,13 @@ public class User implements UserDetails {
 
     public void setActivePromoCodes(List<String> activePromoCodes) {
         this.activePromoCodes = activePromoCodes;
+    }
+
+    public boolean isHasChangedAddress() {
+        return hasChangedAddress;
+    }
+
+    public void setHasChangedAddress(boolean hasChangedAddress) {
+        this.hasChangedAddress = hasChangedAddress;
     }
 }

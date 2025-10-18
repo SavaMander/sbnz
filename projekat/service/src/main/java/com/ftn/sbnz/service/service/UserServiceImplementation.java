@@ -7,10 +7,13 @@ import com.ftn.sbnz.model.models.Address;
 import com.ftn.sbnz.model.models.CreditCard;
 import com.ftn.sbnz.model.models.Role;
 import com.ftn.sbnz.model.models.User;
+import com.ftn.sbnz.model.util.SecurityUtil;
 import com.ftn.sbnz.service.repository.AddressRepository;
 import com.ftn.sbnz.service.repository.CreditCardRepository;
 import com.ftn.sbnz.service.repository.UserRepository;
 import org.aspectj.bridge.Message;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +36,12 @@ public class UserServiceImplementation implements UserService {
     @Autowired
     @Lazy
     private PasswordEncoder passwordEncoder;
+
+    private final KieContainer kieContainer;
+
+    UserServiceImplementation( KieContainer kieContainer ) {
+        this.kieContainer = kieContainer;
+    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> userOptional = userRepository.findByEmail(username);
@@ -76,6 +85,18 @@ public class UserServiceImplementation implements UserService {
                     registrationRequest.getPhoneNumber(),
                     Role.User
         );
+
+        KieSession kieSession = kieContainer.newKieSession("k-session");
+        kieSession.addEventListener(new org.kie.api.event.rule.DebugAgendaEventListener());
+        try {
+            SecurityUtil util = new SecurityUtil();
+            kieSession.setGlobal("securityUtil", util);
+
+            kieSession.insert(user);
+            kieSession.fireAllRules();
+        } finally {
+            kieSession.dispose();
+        }
         userRepository.save(user);
         return new MessageResponse(true, "Successfully registered");
     }

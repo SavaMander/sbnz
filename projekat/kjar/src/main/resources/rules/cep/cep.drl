@@ -1,1 +1,53 @@
 package cep;
+import com.ftn.sbnz.model.models.User;
+import com.ftn.sbnz.model.models.SuspicionLevel;
+import com.ftn.sbnz.model.models.Order;
+import com.ftn.sbnz.model.models.Address;
+import com.ftn.sbnz.model.models.OrderStatus;
+import com.ftn.sbnz.model.models.CreditCard;
+import com.ftn.sbnz.model.models.IPAddress;
+global com.ftn.sbnz.model.util.SecurityUtil securityUtil;
+
+declare User
+    @role( event )
+    @timestamp( creationDate ) // Polje koje sadrži vreme dešavanja događaja
+end
+declare Order
+    @role( event )
+    @timestamp( cancellationDate )
+end
+
+rule "Flag address with too many new accounts in 1 hour"
+    when
+        $address : Address( isSuspicious == false )
+
+        Number( intValue > 2 ) from accumulate (
+            $user : User(
+                address == $address
+            ) over window:time( 30s ),
+            count( $user )
+        )
+    then
+        System.out.println("SUSPICIOUS ACTIVITY: More than 2 accounts created at address " + $address.getId() + " in the last hour. Flagging address.");
+        $address.setSuspicious(true);
+        update( $address );
+end
+rule "Flag address with too many cancelled orders in 1 hour"
+    when
+        // 1. Pronađi adresu koja još uvek nije sumnjiva.
+        $currentAddress : Address( isSuspicious == false )
+
+        // 2. Akumuliraj (prebroj) sve 'Order' događaje (otkazivanje porudžbina)
+        //    koji su se desili u poslednjih sat vremena za tu adresu.
+        Number( intValue > 2 ) from accumulate (
+            $order : Order(
+                user.address == $currentAddress,
+                status == OrderStatus.CANCELLED
+            ) over window:time( 30s ),
+            count( $order )
+        )
+    then
+        System.out.println("SUSPICIOUS ACTIVITY: More than 2 orders cancelled at address " + $address.getId() + " in the last hour. Flagging address.");
+        $currentAddress.setSuspicious(true);
+        update( $currentAddress );
+end
