@@ -33,6 +33,7 @@ public class Address {
     public void addAccount(){
         this.numberOfAccounts++;
     }
+    public void removeAccount(){this.numberOfAccounts--;}
 
     public String getAddress() {
         return address;

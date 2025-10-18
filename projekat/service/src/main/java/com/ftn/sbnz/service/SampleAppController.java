@@ -1,6 +1,5 @@
 package com.ftn.sbnz.service;
 
-import com.ftn.sbnz.model.models.CustomerAccount;
 import com.ftn.sbnz.model.models.Order;
 import com.ftn.sbnz.model.models.OrderStatus;
 import com.ftn.sbnz.model.util.SecurityUtil;

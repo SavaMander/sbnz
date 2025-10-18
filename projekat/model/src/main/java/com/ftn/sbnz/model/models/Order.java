@@ -68,6 +68,15 @@ public class Order {
     public Order() {
 
     }
+    public Order(User user, String restaurant, String orderList, double orderPrice, String ipAddress) {
+        this.user = user;
+        this.restaurant = restaurant;
+        this.orderList = orderList;
+        this.orderPrice = orderPrice;
+        this.ipAddress =  new IPAddress(ipAddress);
+        this.status = OrderStatus.CREATED;
+        this.creationDate = Instant.now();
+    }
 
     public UUID getOrderId() {
         return orderId;
