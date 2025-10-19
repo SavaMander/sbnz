@@ -93,7 +93,10 @@ public class UserServiceImplementation implements UserService {
             kieSession.setGlobal("securityUtil", util);
 
             kieSession.insert(user);
-            kieSession.fireAllRules();
+
+            System.out.println("Firing all rules...");
+            int rulesFired = kieSession.fireAllRules();
+            System.out.println("Finished. Rules fired: " + rulesFired);
         } finally {
             kieSession.dispose();
         }

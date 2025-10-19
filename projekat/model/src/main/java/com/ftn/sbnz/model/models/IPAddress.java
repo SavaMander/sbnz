@@ -14,19 +14,40 @@ public class IPAddress {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     private UUID id;
+
     @Column(nullable = false)
     private String address;
+
     @Column(nullable = false)
-    private Boolean isSuspicious;
+    private Boolean suspicious; // FIX 2: Renamed field from isSuspicious
+
     public IPAddress(String address){
         this.address = address;
-        this.isSuspicious = false;
+        this.suspicious = false; // Updated to match field name
     }
 
     public IPAddress() {
-
     }
 
+    // --- FIX 1: ADD GETTER/SETTER FOR ID ---
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    // --- Method to check suspicion ---
+    public Boolean getSuspicious() { // FIX 2: Getter renamed to "is..."
+        return suspicious;
+    }
+
+    public void setSuspicious(Boolean suspicious) { // FIX 2: Setter updated
+        this.suspicious = suspicious;
+    }
+
+    // --- Other existing methods ---
     public String getAddress() {
         return address;
     }
@@ -34,13 +55,4 @@ public class IPAddress {
     public void setAddress(String address) {
         this.address = address;
     }
-
-    public Boolean getSuspicious() {
-        return isSuspicious;
-    }
-
-    public void setSuspicious(Boolean suspicious) {
-        isSuspicious = suspicious;
-    }
-
 }

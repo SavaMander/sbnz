@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin() // For frontend development, adjust as needed
+@CrossOrigin
 @RequestMapping("/api/address")
 public class AddressController {
 

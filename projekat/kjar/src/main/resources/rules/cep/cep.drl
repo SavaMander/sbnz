@@ -19,7 +19,7 @@ end
 
 rule "Flag address with too many new accounts in 1 hour"
     when
-        $address : Address( isSuspicious == false )
+        $address : Address( suspicious == false )
 
         Number( intValue > 2 ) from accumulate (
             $user : User(
@@ -35,7 +35,7 @@ end
 rule "Flag address with too many cancelled orders in 1 hour"
     when
         // 1. Pronađi adresu koja još uvek nije sumnjiva.
-        $currentAddress : Address( isSuspicious == false )
+        $currentAddress : Address( suspicious == false )
 
         // 2. Akumuliraj (prebroj) sve 'Order' događaje (otkazivanje porudžbina)
         //    koji su se desili u poslednjih sat vremena za tu adresu.

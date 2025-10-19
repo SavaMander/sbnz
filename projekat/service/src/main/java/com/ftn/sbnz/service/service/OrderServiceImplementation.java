@@ -3,10 +3,12 @@ package com.ftn.sbnz.service.service;
 import com.ftn.sbnz.model.dto.GetOrdersRequest;
 import com.ftn.sbnz.model.dto.MessageResponse;
 import com.ftn.sbnz.model.dto.OrderRequest;
+import com.ftn.sbnz.model.models.IPAddress;
 import com.ftn.sbnz.model.models.Order;
 import com.ftn.sbnz.model.models.OrderStatus;
 import com.ftn.sbnz.model.models.User;
 import com.ftn.sbnz.model.util.SecurityUtil;
+import com.ftn.sbnz.service.repository.IPAddressRepository;
 import com.ftn.sbnz.service.repository.OrderRepository;
 import com.ftn.sbnz.service.repository.UserRepository;
 import org.kie.api.runtime.KieContainer;
@@ -25,6 +27,8 @@ public class OrderServiceImplementation implements  OrderService{
     private UserRepository userRepository;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private IPAddressRepository ipAddressRepository;
 
     private final KieContainer kieContainer;
 
@@ -39,6 +43,11 @@ public class OrderServiceImplementation implements  OrderService{
             return new MessageResponse(false, "invalid user");
         }
         User user = userOpt.get();
+        Optional<IPAddress> ipOpt = ipAddressRepository.findIPAddressByAddress(orderRequest.getIpAddress());
+
+        // If it exists, use the existing one. If not, create a new one.
+        IPAddress ipAddress = ipOpt.orElse(new IPAddress(orderRequest.getIpAddress()));
+
         Order order = new Order(user,orderRequest.getRestaurant(),orderRequest.getOrderList(),
                 orderRequest.getOrderPrice(),orderRequest.getIpAddress());
 
@@ -92,7 +101,7 @@ public class OrderServiceImplementation implements  OrderService{
 
     @Override
     public List<GetOrdersRequest> getOrders(String email) {
-        List<Order> orders = orderRepository.findByUserEmail(email);
+        List<Order> orders = orderRepository.findByUserEmailAndStatus(email, OrderStatus.CREATED);
         List<GetOrdersRequest> ordersRequests = new ArrayList<>();
         for (Order order : orders) {
             GetOrdersRequest getOrdersRequest = new GetOrdersRequest(order.getOrderId(),order.getRestaurant(),order.getOrderList(),order.getOrderPrice(), order.getCreationDate());

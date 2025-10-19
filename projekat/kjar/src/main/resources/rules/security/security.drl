@@ -10,10 +10,7 @@ import com.ftn.sbnz.model.models.CreditCard;
 import com.ftn.sbnz.model.models.IPAddress;
 global com.ftn.sbnz.model.util.SecurityUtil securityUtil;
 
-//      AGENDA GROUP 1:
 rule "Flag new account with more than 1 promo code"
-    agenda-group "process-valid-users"
-    salience 10 // High priority within this group
     when
         $account : User(
             newAccount == true,
@@ -26,7 +23,6 @@ rule "Flag new account with more than 1 promo code"
 end
 
 rule "Flag new account if email is temporary"
-    agenda-group "process-valid-users"
     when
         $account : User(suspicionLevel == SuspicionLevel.VALID)
         eval(securityUtil.isMailTemporary($account.getEmail()))
@@ -36,7 +32,6 @@ rule "Flag new account if email is temporary"
 end
 
 rule "Penalize order cancelling -> User Level 2"
-    agenda-group "process-valid-users"
     when
         $account : User(suspicionLevel == SuspicionLevel.VALID)
         $order : Order(
@@ -49,7 +44,6 @@ rule "Penalize order cancelling -> User Level 2"
 end
 
 rule "New account, address is suspicious -> User Level 2"
-    agenda-group "process-valid-users"
     when
         $account : User(
             suspicionLevel == SuspicionLevel.VALID,
@@ -57,7 +51,7 @@ rule "New account, address is suspicious -> User Level 2"
         )
         $address : Address(
             id == $account.address.id,
-            isSuspicious == true
+            suspicious == true
         )
     then
         $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
@@ -65,7 +59,6 @@ rule "New account, address is suspicious -> User Level 2"
 end
 
 rule "CreditCard is suspicious -> User Level 2"
-    agenda-group "process-valid-users"
     when
         $account : User(
             suspicionLevel == SuspicionLevel.VALID,
@@ -73,7 +66,7 @@ rule "CreditCard is suspicious -> User Level 2"
         )
         $card : CreditCard(
             id == $account.cardNumber.id,
-            isSuspicious == true
+            suspicious == true
         )
     then
         $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
@@ -81,7 +74,6 @@ rule "CreditCard is suspicious -> User Level 2"
 end
 
 rule "Card used on 3+ accounts -> User Level 2 & Flag Card"
-    agenda-group "process-valid-users"
     when
         $account : User(
             newAccount == true,
@@ -91,7 +83,7 @@ rule "Card used on 3+ accounts -> User Level 2 & Flag Card"
         $card : CreditCard(
             id == $account.cardNumber.id,
             numberOfAccounts >= 3,
-            isSuspicious == false
+            suspicious == false
         )
     then
         $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
@@ -101,10 +93,9 @@ rule "Card used on 3+ accounts -> User Level 2 & Flag Card"
 end
 
 rule "Order on suspicious IP address -> User Level 2"
-    agenda-group "process-valid-users"
     when
         $account : User(suspicionLevel == SuspicionLevel.VALID)
-        $ipAddress : IPAddress(isSuspicious == true)
+        $ipAddress : IPAddress(suspicious == true)
         $order : Order(
             user == $account,
             ipAddress == $ipAddress
@@ -113,13 +104,7 @@ rule "Order on suspicious IP address -> User Level 2"
         $account.setSuspicionLevel(SuspicionLevel.SUSPICIOUS);
         update($account);
 end
-
-
-//      AGENDA GROUP 2:
-
-
 rule "Penalize order cancelling -> User Level 3"
-    agenda-group "process-suspicious-users"
     when
         $account : User(suspicionLevel == SuspicionLevel.SUSPICIOUS)
         $order : Order(
@@ -133,7 +118,6 @@ rule "Penalize order cancelling -> User Level 3"
         update($account);
 end
 rule "Address changed while suspicious"
-    agenda-group "process-suspicious-users"
     when
         $account : User(
             suspicionLevel == SuspicionLevel.SUSPICIOUS,
@@ -144,9 +128,7 @@ rule "Address changed while suspicious"
         update($account);
 end
 
-rule "Block suspicious new account with more than 1 promo code" // Renamed from duplicate
-    agenda-group "process-suspicious-users"
-    salience 10 // High priority within this group
+rule "Block suspicious new account with more than 1 promo code"
     when
         $account : User(
             newAccount == true,
@@ -159,10 +141,7 @@ rule "Block suspicious new account with more than 1 promo code" // Renamed from 
         update($account);
 end
 
-//      AGENDA GROUP 3
-
 rule "Address changed while malicious"
-    agenda-group "process-malicious-users"
     when
         $account : User(
             suspicionLevel == SuspicionLevel.MALICIOUS,
@@ -174,7 +153,6 @@ rule "Address changed while malicious"
 end
 
 rule "Order cancelling while suspicious"
-    agenda-group "process-malicious-users"
     when
         $account : User(suspicionLevel == SuspicionLevel.MALICIOUS)
         $order : Order(
@@ -189,7 +167,6 @@ end
 
 
 rule "Level 2 User Spent > 3000 -> Level 1"
-    agenda-group "de-escalate-user"
     when
         $account : User(
             suspicionLevel == SuspicionLevel.SUSPICIOUS,
@@ -201,7 +178,6 @@ rule "Level 2 User Spent > 3000 -> Level 1"
 end
 
 rule "Level 3 User Spent > 5000 -> Level 1"
-    agenda-group "de-escalate-user"
     when
         $account : User(
             suspicionLevel == SuspicionLevel.MALICIOUS,

@@ -23,7 +23,8 @@ public class Order {
     private double orderPrice;
     @Column(nullable = false)
     private OrderStatus status;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ip_address_id")
     private IPAddress ipAddress;
     @Column(nullable = false)
     private String restaurant;

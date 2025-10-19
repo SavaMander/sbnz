@@ -14,12 +14,12 @@ export class OrderService {
   constructor(private http: HttpClient) { }
 
     order(order: OrderRequest): Observable<MessageResponse> {
-      return this.http.post<MessageResponse>(env.apiHost+'auth/order',order,{
+      return this.http.post<MessageResponse>(env.apiHost+'orders',order,{
       });
     }
 
     getMyOrders(email: string): Observable<GetOrdersRequest[]> {
         let params = new HttpParams().set('email', email);
-        return this.http.get<GetOrdersRequest[]>(`${env.apiHost}auth/orders`, { params: params });
+        return this.http.get<GetOrdersRequest[]>(`${env.apiHost}orders`, { params: params });
     }
 }
