@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { OrderRequest } from 'src/app/dto/OrderRequest';
 import { AuthService } from 'src/app/services/auth.service';
 import { OrderService } from 'src/app/services/order.service';
@@ -20,12 +20,13 @@ interface CartItem extends MenuItem {
   templateUrl: './restaurant.component.html',
   styleUrls: ['./restaurant.component.css']
 })
-export class RestaurantComponent {
+export class RestaurantComponent implements OnInit {
   cart: CartItem[] = [];
   cartTotal: number = 0;
   cartItemCount: number = 0;
   restaurantName: string = 'Pizza Palace';
-
+  isLoggedIn = false;
+  role = '';
   private SUSPICIOUS_IPS: string[] = [
         '192.168.1.100',
         '10.0.0.5',
@@ -128,6 +129,10 @@ export class RestaurantComponent {
   ];
 
   constructor(private orderService: OrderService, private authService: AuthService) {
+  }
+  ngOnInit(): void {
+    this.isLoggedIn = this.authService.isLoggedIn();
+    this.role = this.authService.getRole();
   }
 
   addToCart(item: MenuItem, quantity: number = 1): void {

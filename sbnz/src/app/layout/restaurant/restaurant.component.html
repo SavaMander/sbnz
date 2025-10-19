@@ -44,15 +44,6 @@
   <div class="main-content">
     <!-- Menu Section -->
     <div>
-      <!-- Filters -->
-      <div class="filters">
-        <button class="filter-btn active">All</button>
-        <button class="filter-btn">Pizzas</button>
-        <button class="filter-btn">Sides</button>
-        <button class="filter-btn">Drinks</button>
-        <button class="filter-btn">Desserts</button>
-      </div>
-
       <!-- Pizzas Section -->
       <div class="menu-section">
         <h2 class="menu-title">🍕 Our Pizzas</h2>
@@ -64,7 +55,7 @@
               <p class="item-description">{{ pizza.description }}</p>
               <div class="item-footer">
                 <span class="item-price">{{ pizza.price }} din</span>
-                <button class="add-btn" (click)="addToCart(pizza)">Add +</button>
+                <button *ngIf="isLoggedIn && role=='ROLE_User'" class="add-btn" (click)="addToCart(pizza)">Add +</button>
               </div>
             </div>
           </div>
@@ -111,7 +102,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <!-- Cart Summary -->
-      <div class="cart-summary">
+      <div *ngIf="isLoggedIn && role=='ROLE_User'" class="cart-summary">
         <h3>Your Order</h3>
 
         <!-- Empty Cart Message -->
@@ -143,7 +134,7 @@
           </div>
 
           <button class="checkout-btn" (click)="proceedToCheckout()">
-            Proceed to Checkout
+            Order Now
           </button>
 
           <button class="clear-cart-btn" (click)="clearCart()">
@@ -161,15 +152,11 @@
         </div>
         <div class="info-item">
           <span class="info-icon">📍</span>
-          <span>456 Food St, Downtown</span>
+          <span>Napuljska 5, Novi Sad</span>
         </div>
         <div class="info-item">
           <span class="info-icon">💰</span>
           <span>Min order: 0 din</span>
-        </div>
-        <div class="info-item">
-          <span class="info-icon">🚚</span>
-          <span>Free delivery over 50 din</span>
         </div>
         <div class="info-item">
           <span class="info-icon">⭐</span>

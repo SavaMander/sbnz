@@ -31,21 +31,7 @@ public class AddressServiceImplementation implements AddressService {
     @Override
     public MessageResponse changeAddress(AddressChangeRequest addressChangeRequest) {
         Optional<Address> oldAddressOpt = addressRepository.findAddressByAddress(addressChangeRequest.getOldAddress());
-        if(oldAddressOpt.isPresent()) {
-            Address oldAddress = oldAddressOpt.get();
-            oldAddress.removeAccount();
-        }
-        if (addressRepository.findAddressByAddress(addressChangeRequest.getNewAddress()).isEmpty()) {
-          Address newAddress = new Address(addressChangeRequest.getNewAddress());
-          addressRepository.save(newAddress);
-        }
-        else{
-            Optional<Address> addressOpt = addressRepository.findAddressByAddress((addressChangeRequest.getNewAddress()));
-            if (addressOpt.isPresent()) {
-                Address address = addressOpt.get();
-                address.addAccount();
-            }
-        }
+
         Optional<User> userOpt = userRepository.findByEmail((addressChangeRequest.getEmail()));
         if(userOpt.isEmpty()) {
             return new MessageResponse(false, "User not found");
@@ -53,6 +39,26 @@ public class AddressServiceImplementation implements AddressService {
         }
         User user = userOpt.get();
         user.setHasChangedAddress(true);
+
+        if(oldAddressOpt.isPresent()) {
+            Address oldAddress = oldAddressOpt.get();
+            oldAddress.removeAccount();
+            addressRepository.save(oldAddress);
+        }
+        if (addressRepository.findAddressByAddress(addressChangeRequest.getNewAddress()).isEmpty()) {
+          Address newAddress = new Address(addressChangeRequest.getNewAddress());
+          addressRepository.save(newAddress);
+          user.setAddress(newAddress);
+        }
+        else{
+            Optional<Address> addressOpt = addressRepository.findAddressByAddress((addressChangeRequest.getNewAddress()));
+            if (addressOpt.isPresent()) {
+                Address address = addressOpt.get();
+                address.addAccount();
+                user.setAddress(address);
+                addressRepository.save(address);
+            }
+        }
 
         KieSession kieSession = kieContainer.newKieSession("k-session");
 		kieSession.addEventListener(new org.kie.api.event.rule.DebugAgendaEventListener());

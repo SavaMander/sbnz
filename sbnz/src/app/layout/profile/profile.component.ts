@@ -52,7 +52,9 @@ localStorage.removeItem('user');
   };
   orders: Order[] = [];
   filteredOrders: Order[] = [];
-
+  showPromoCodeDialog: boolean = false;
+  promoCodeForm: { code: string } = { code: '' };
+  role: string = '';
   showEditProfile: boolean = false;
   editForm = {
     address: '',
@@ -76,6 +78,7 @@ localStorage.removeItem('user');
 
   ngOnInit(): void {
     // 1. Pozivanje servisa za dohvat podataka o profilu
+    this.role = this.authService.getRole();
     this.authService.profile(this.authService.getUsername()).subscribe({
       next: (profileData: Profile) => {
         // 2. Mapiranje primljenog DTO-a na UserInfo za prikaz
@@ -83,11 +86,9 @@ localStorage.removeItem('user');
         this.userInfo.email = profileData.email;
         this.userInfo.address = profileData.address;
         this.userInfo.phoneNumber = profileData.phoneNumber;
-        
-
-        // Ažuriranje forme za editovanje
         this.editForm.address = this.userInfo.address;
-
+        
+        this.loadOrders(this.authService.getUsername());
         console.log('Profil je uspešno učitan:', profileData);
       },
       error: (err) => {
@@ -134,6 +135,29 @@ localStorage.removeItem('user');
     };
   }
 
+  cancelOrder(order: Order): void {
+    if (!confirm(`Are you sure you want to cancel order for ${order.restaurantName}, Price: ${order.totalAmount} (ID: ${order.id})?`)) {
+      return;
+    }
+    
+    const email = this.authService.getUsername();
+
+    this.orderService.cancelOrder(order.id, email).subscribe({
+      next: (response: MessageResponse) => {
+        if (response.successful) {
+          alert('Order successfully cancelled!');
+          window.location.reload();
+        } else {
+          alert(`Cancellation failed: ${response.message}`);
+        }
+      },
+      error: (err) => {
+        console.error('Error during cancellation:', err);
+        alert('An error occurred while trying to cancel the order.');
+      }
+    });
+  }
+
   closeEditProfile(): void {
     this.showEditProfile = false;
   }
@@ -148,7 +172,7 @@ localStorage.removeItem('user');
 
     this.authService.changeAddress(addressChangeRequest).subscribe({
       next: (messageResponse: MessageResponse) => {
-        alert("Address changed successfully");
+        alert(messageResponse.message);
         this.closeEditProfile();
         window.location.reload();
       },
@@ -197,5 +221,38 @@ localStorage.removeItem('user');
       minute: '2-digit'
     };
     return new Date(dateString).toLocaleDateString('en-US', options);
+  }
+
+  openPromoCodeDialog(): void {
+    this.showPromoCodeDialog = true;
+    this.promoCodeForm.code = ''; // Resetovanje polja pri otvaranju
+  }
+
+  closePromoCodeDialog(): void {
+    this.showPromoCodeDialog = false;
+  }
+
+  handlePromoCode(): void {
+    const code = this.promoCodeForm.code;
+    const email = this.authService.getUsername();
+
+    if (!code || code.trim() === '') {
+      alert('Please enter a valid code.');
+      return;
+    }
+
+    // Poziv AuthService metode (pretpostavlja se da je ona već dodata)
+    this.authService.addPromoCode(email, code).subscribe({
+      next: (response: MessageResponse) => {
+        alert(`Code submission status: ${response.message}`);
+        this.closePromoCodeDialog();
+      },
+      error: (err) => {
+        console.error('Greška pri dodavanju koda:', err);
+        // Prikazivanje greške, npr. iz Angular ErrorResponse
+        const errorMessage = err.error?.message || 'Failed to add promo code.';
+        alert(`Error: ${errorMessage}`);
+      }
+    });
   }
 }

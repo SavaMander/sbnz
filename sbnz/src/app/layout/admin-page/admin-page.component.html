@@ -1,0 +1,119 @@
+<div class="admin-container">
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="header-content">
+      <h1>⚙️ Admin Dashboard</h1>
+      <div class="header-stats">
+        <div class="stat-box">
+          <span class="stat-label">Total Users</span>
+          <span class="stat-value">{{ profiles.length }}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading users...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="error-container">
+    <p>{{ errorMessage }}</p>
+    <button (click)="loadUsers()" class="retry-btn">Retry</button>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && !errorMessage" class="main-content">
+    <!-- Filters Section -->
+    <section class="filters-section">
+      <div class="results-info">
+        Showing {{ profiles.length }} of {{ profiles.length }} users
+      </div>
+    </section>
+
+    <!-- Users Table -->
+    <section class="users-section">
+      <div *ngIf="profiles.length === 0" class="no-users">
+        <p>No users found matching your criteria</p>
+      </div>
+
+      <div class="users-table-wrapper">
+        <table class="users-table" *ngIf="profiles.length > 0">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th *ngIf="profiles[0]?.suspicionLevel">Suspicion</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of profiles" class="user-row">
+              <td class="username-cell">
+                <strong>{{ user.username }}</strong>
+              </td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.phoneNumber || 'N/A' }}</td>
+              <td *ngIf="user.suspicionLevel">
+                <span class="suspicion-badge" [ngClass]="getSuspicionColor(user.suspicionLevel)">
+                  {{ user.suspicionLevel | titlecase }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="action-btn view-btn" (click)="openUserDetail(user)" title="View Details">
+                  👁️
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- User Detail Dialog -->
+  <div *ngIf="showUserDetailDialog && selectedUser" class="dialog-overlay" (click)="closeUserDetail()">
+    <div class="dialog-content" (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <h2>{{ selectedUser.username }}</h2>
+        <button class="close-btn" (click)="closeUserDetail()">✕</button>
+      </div>
+
+      <div class="dialog-body">
+        <div class="detail-section">
+          <h3>Personal Information</h3>
+          <div class="detail-item">
+            <span class="detail-label">Username:</span>
+            <span class="detail-value">{{ selectedUser.username }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Email:</span>
+            <span class="detail-value">{{ selectedUser.email }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Phone:</span>
+            <span class="detail-value">{{ selectedUser.phoneNumber || 'N/A' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Address:</span>
+            <span class="detail-value">{{ selectedUser.address || 'N/A' }}</span>
+          </div>
+        </div>
+        <div class="detail-section" *ngIf="selectedUser.suspicionLevel">
+          <h3>Account Status</h3>
+          <div class="detail-item" *ngIf="selectedUser.suspicionLevel">
+            <span class="detail-label">Suspicion Level:</span>
+            <span class="detail-value">
+              <span class="suspicion-badge" [ngClass]="getSuspicionColor(selectedUser.suspicionLevel)">
+                {{ selectedUser.suspicionLevel | titlecase }}
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

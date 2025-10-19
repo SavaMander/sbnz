@@ -14,4 +14,5 @@ public class Profile {
     public String email;
     public String address;
     public String phoneNumber;
+    public String suspicionLevel;
 }

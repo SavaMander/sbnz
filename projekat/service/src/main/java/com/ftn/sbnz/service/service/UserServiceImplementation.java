@@ -23,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -91,7 +93,8 @@ public class UserServiceImplementation implements UserService {
         try {
             SecurityUtil util = new SecurityUtil();
             kieSession.setGlobal("securityUtil", util);
-
+            kieSession.insert(creditCard);
+            kieSession.insert(address);
             kieSession.insert(user);
 
             System.out.println("Firing all rules...");
@@ -110,7 +113,41 @@ public class UserServiceImplementation implements UserService {
             return null;
         }
         User user = opt.get();
-        Profile profile = new Profile(user.getRealUsername(),user.getEmail(),user.getAddress().getAddress(),user.getPhone());
+        Profile profile = new Profile(user.getRealUsername(),user.getEmail(),user.getAddress().getAddress(),user.getPhone(),user.getSuspicionLevel().toString());
         return profile;
+    }
+
+    public MessageResponse addCode(String email, String code){
+        Optional<User> opt = userRepository.findByEmail(email);
+        if(opt.isEmpty()){
+            return new MessageResponse(false, "User doesnt exist");
+        }
+        User user = opt.get();
+        user.addPromoCode(code);
+        KieSession kieSession = kieContainer.newKieSession("k-session");
+        kieSession.addEventListener(new org.kie.api.event.rule.DebugAgendaEventListener());
+        try {
+            SecurityUtil util = new SecurityUtil();
+            kieSession.setGlobal("securityUtil", util);
+            kieSession.insert(user);
+            System.out.println("Firing all rules...");
+            int rulesFired = kieSession.fireAllRules();
+            System.out.println("Finished. Rules fired: " + rulesFired);
+        } finally {
+            kieSession.dispose();
+        }
+        userRepository.save(user);
+
+        return new MessageResponse(true, "Promo code is successfully added");
+    }
+
+    public List<Profile> getUsers(){
+        List<User> users = userRepository.findAll();
+        List<Profile> profiles =  new ArrayList<Profile>();
+        for (User user: users) {
+            Profile p = new Profile(user.getRealUsername(),user.getEmail(),user.getAddress().getAddress(),user.getPhone(),user.getSuspicionLevel().toString());
+            profiles.add(p);
+        }
+        return profiles;
     }
 }

@@ -22,4 +22,13 @@ export class OrderService {
         let params = new HttpParams().set('email', email);
         return this.http.get<GetOrdersRequest[]>(`${env.apiHost}orders`, { params: params });
     }
+
+    cancelOrder(orderId: string, email: string): Observable<MessageResponse> {
+        let params = new HttpParams().set('email', email);
+        return this.http.put<MessageResponse>(
+            `${env.apiHost}orders/${orderId}/cancel`, 
+            null,
+            { params: params }
+        );
+    }
 }

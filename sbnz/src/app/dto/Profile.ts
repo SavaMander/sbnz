@@ -3,4 +3,5 @@ export interface Profile {
     email: string;
     address: string;
     phoneNumber: string;
+    suspicionLevel: string;
 }

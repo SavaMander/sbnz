@@ -45,12 +45,16 @@ public class OrderServiceImplementation implements  OrderService{
         User user = userOpt.get();
         Optional<IPAddress> ipOpt = ipAddressRepository.findIPAddressByAddress(orderRequest.getIpAddress());
 
+        List<String> codes = user.getActivePromoCodes();
+        double price = orderRequest.getOrderPrice() - codes.size()*150 + 300;
+        if(price<0){
+            price = 0;
+        }
         // If it exists, use the existing one. If not, create a new one.
         IPAddress ipAddress = ipOpt.orElse(new IPAddress(orderRequest.getIpAddress()));
-
+        ipAddressRepository.save(ipAddress);
         Order order = new Order(user,orderRequest.getRestaurant(),orderRequest.getOrderList(),
-                orderRequest.getOrderPrice(),orderRequest.getIpAddress());
-
+                price,ipAddress);
         KieSession kieSession = kieContainer.newKieSession("k-session");
         kieSession.addEventListener(new org.kie.api.event.rule.DebugAgendaEventListener());
         try {
@@ -63,9 +67,10 @@ public class OrderServiceImplementation implements  OrderService{
         } finally {
             kieSession.dispose();
         }
+        user.setNewAccount(false);
         userRepository.save(user);
         orderRepository.save(order);
-        return new MessageResponse(true, "Successfully created");
+        return new MessageResponse(true, "Successfully created order, Price: "+Double.toString(price));
     }
 
     @Override
