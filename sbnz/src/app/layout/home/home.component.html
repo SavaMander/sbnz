@@ -82,7 +82,7 @@
   </section>
 
   <!-- Register Dialog -->
-  <div *ngIf="showRegisterDialog" class="dialog-overlay" (click)="closeRegisterDialog()">
+  <div *ngIf="showRegisterDialog" class="dialog-overlay">
     <div class="dialog-content" (click)="$event.stopPropagation()">
       <div class="dialog-header">
         <h2>Create Account</h2>
@@ -208,7 +208,7 @@
   </div>
 
   <!-- Login Dialog -->
-  <div *ngIf="showLoginDialog" class="dialog-overlay" (click)="closeLoginDialog()">
+  <div *ngIf="showLoginDialog" class="dialog-overlay">
     <div class="dialog-content" (click)="$event.stopPropagation()">
       <div class="dialog-header">
         <h2>Login</h2>

@@ -9,6 +9,7 @@ import { RestaurantComponent } from './layout/restaurant/restaurant.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { Interceptor } from './services/interceptor';
 import { ProfileComponent } from './layout/profile/profile.component';
+import { AdminPageComponent } from './layout/admin-page/admin-page.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -16,6 +17,7 @@ import { ProfileComponent } from './layout/profile/profile.component';
     HomeComponent,
     RestaurantComponent,
     ProfileComponent,
+    AdminPageComponent,
   ],
   imports: [
     BrowserModule,

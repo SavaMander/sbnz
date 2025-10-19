@@ -52,6 +52,8 @@ public class User implements UserDetails {
     private double moneySpent;
     @Column
     private Instant blockExpirationDate;
+    @Column
+    private Instant lastAccumulationResetDate;
     public double getMoneySpent() {
         return moneySpent;
     }
@@ -102,15 +104,33 @@ public class User implements UserDetails {
         this.blockExpirationDate = null;
         this.moneySpent = 0;
         this.hasChangedAddress = false;
+        this.lastAccumulationResetDate = Instant.now();
     }
 
     public User() {
 
     }
 
+    public Instant getLastAccumulationResetDate() {
+        return lastAccumulationResetDate;
+    }
+
+    public void setLastAccumulationResetDate(Instant lastAccumulationResetDate) {
+        this.lastAccumulationResetDate = lastAccumulationResetDate;
+    }
+
     public String getRealUsername() {
         return username;
     }
+
+    public void addPromoCode(String code){
+        this.activePromoCodes.add(code);
+    }
+
+    public void removePromoCodes(){
+        this.activePromoCodes.clear();
+    }
+
     public String getUsername() {
         return email;
     }

@@ -4,7 +4,7 @@ import { LoginResponse } from '../dto/LoginResponse';
 import { MessageResponse } from '../dto/MessageResponse';
 import { RegistrationRequest } from '../dto/RegistrationRequest';
 import { LoginRequest } from '../dto/LoginRequest';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { env } from '../env/env';
 import {JwtHelperService} from '@auth0/angular-jwt'
 import { Profile } from '../dto/Profile';
@@ -44,9 +44,24 @@ export class AuthService {
     }
 
     changeAddress(addressChangeRequest: AddressChangeRequest): Observable<MessageResponse> {
-          return this.http.post<MessageResponse>(env.apiHost+'address/change',addressChangeRequest,{
+          return this.http.put<MessageResponse>(env.apiHost+'address/change',addressChangeRequest,{
     });
     }
+    
+    addPromoCode(email: string, code: string): Observable<MessageResponse> {
+    let params = new HttpParams()
+      .set('email', email)
+      .set('code', code);
+    return this.http.post<MessageResponse>(
+      `${env.apiHost}auth/add-code`, 
+      null, 
+      { params: params }
+    );
+  }
+
+  getUsers(): Observable<Profile[]> {
+    return this.http.get<Profile[]>(`${env.apiHost}auth/users`);
+  }
 
     getRole(): any {
     if(this.isLoggedIn()){

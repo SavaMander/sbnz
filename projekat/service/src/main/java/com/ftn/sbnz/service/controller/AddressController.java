@@ -20,9 +20,7 @@ public class AddressController {
         this.addressService = addressService;
     }
     @PutMapping("/change")
-    public ResponseEntity<MessageResponse> changeUserAddress(@RequestBody AddressChangeRequest addressChangeRequest, String email) {
-        addressChangeRequest.setEmail(email);
-
+    public ResponseEntity<MessageResponse> changeUserAddress(@RequestBody AddressChangeRequest addressChangeRequest) {
         MessageResponse response = addressService.changeAddress(addressChangeRequest);
 
         if (response.getSuccessful()) {

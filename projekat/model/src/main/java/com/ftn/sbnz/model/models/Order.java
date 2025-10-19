@@ -69,12 +69,12 @@ public class Order {
     public Order() {
 
     }
-    public Order(User user, String restaurant, String orderList, double orderPrice, String ipAddress) {
+    public Order(User user, String restaurant, String orderList, double orderPrice, IPAddress ipAddress) {
         this.user = user;
         this.restaurant = restaurant;
         this.orderList = orderList;
         this.orderPrice = orderPrice;
-        this.ipAddress =  new IPAddress(ipAddress);
+        this.ipAddress =  ipAddress;
         this.status = OrderStatus.CREATED;
         this.creationDate = Instant.now();
     }
